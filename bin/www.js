@@ -7,6 +7,8 @@ const https = require('https')
 import { App , Route } from "./skeleton";
 const chokidar = require('chokidar');
 const watchTarget = [base("/resources") , base("/public")];
+//Use the writer to html
+use("/bin/writter");
 /**
 ** This basic data 
 ** @note please dont modify :)
