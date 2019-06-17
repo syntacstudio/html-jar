@@ -26,29 +26,15 @@ App.use(methodOverride('X-HTTP-Method-Override'))
 require('express-router-group');
 const Route = express.Router();
 
+// use method overide for accept method put and anymore
 App.use(methodOverride(function (req, res) {
   if (req.body && typeof req.body === 'object' && '_method' in req.body) {
-    // look in urlencoded POST bodies and delete it
     var method = req.body._method
     delete req.body._method
     return method
   }
 }))
-/*
-Route.group("/bambang",function(Route) {
-	Route.get("/",function(req,res){
-		return res.send("bgst")
-	})	
-})
-*/
-
-/*
-/// configuration ws
-expressWs.getWss().on('connection', function(ws) {
-  console.log('connection open');
-});
-*/
-
+ 
 global.Route =  Route;
 global.parseForm = parseForm;
 global.csrfProtection =  csrfProtection;
