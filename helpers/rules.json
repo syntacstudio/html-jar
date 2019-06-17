@@ -1,9 +1,0 @@
-[
- {
-		"compile" : "before",
-		"mode" 	  : "all",
-		"subdir"  : "all",
-		"find"    : "@csrf",
-		"replace" : "{{{csrf()}}}"
-	}
-]
