@@ -18,6 +18,7 @@ const recursiveReadSync = require('recursive-readdir-sync');
 const ControllerFiles  = recursiveReadSync(base("/app/controllers"));	
 ControllerFiles.forEach((item)=>{
 	try {
+		if (item.includes(".js") != true) return false; 
 		let itemName  =  item.replace(base("/app/controllers/"),"").replace(".js","");
 		if (itemName != "Controller") {
 			global[itemName] =  require(item);
