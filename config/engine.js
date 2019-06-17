@@ -6,6 +6,7 @@ const parseForm = bodyParser.urlencoded({ extended: false })
 const fs  = require("fs");
 const view_dir = base('resources/views/');
 const rules =  require(base("/helpers/rules.json"));
+const formatter = require("html-formatter")
 App.use(bodyParser.urlencoded({
   extended: true
 }))
@@ -70,7 +71,7 @@ const getFile = async (file) => {
 		}
 	return await beforeCompile(dataFile,file)
 }
-global.view  =  async (path,param = "")=> {
+global.view  =  async (path,param = "",is_write=false)=> {
 	let file;
 	try {
 		file  =  await edge.renderString(await getFile(path),param);
@@ -81,7 +82,9 @@ global.view  =  async (path,param = "")=> {
 			err["stack"] =  `${e} On ${base("resources/views/"+path)}.edge`;
 			file =  edge.render("components/errors",{err:err});
 	}
-	return makeSocket(await file);
+	if (is_write == false) file =  makeSocket(await file);
+	if (process.env.PRETIFY_HTML == "true") file = formatter.render(file);
+	return file;
 }
 
 
