@@ -5,6 +5,8 @@ const serverless = require('serverless-http');
 const moment = require('moment');
 const https = require('https')
 import { App , Route } from "./skeleton";
+const chokidar = require('chokidar');
+const watchTarget = [base("/resources") , base("/public")];
 /**
 ** This basic data 
 ** @note please dont modify :)
@@ -64,28 +66,39 @@ App.use((err,req,res)=>{
 })
 
 // websocket for autoload 
-if (process.env.WEBSOCKET == "true") {
+if (process.env.WEBSOCKET == "true" && process.env.AUTOLOAD == "true") {
 	Route.ws("/skeleton/autoload",(ws,req)=>{
 		let is_dc = 0;
 		ws.on('close',function(msg) {
-			is_dc = 1;
-			console.log("Client diconnected from websocket autoload"); 
+			console.log("Client diconnected from autoload socket"); 
 		})
-		ws.on("connect",function(msg) {
-			console.log("connected")
+		ws.on("message",(msg)=>{
+			let readyStat = 0;
+			const tryReloadStat = (file)=> {
+				if (readyStat == 1) {
+					console.log("Trying send reload request to client ....")
+				}
+				try {
+					if (file.includes("sass") || file.includes("SASS") || file.includes("css") || file.includes("CSS")) {
+		            	if (readyStat == 1 ) return  ws.send("reloadCss");
+		        	} else {
+		             	if (readyStat == 1) return ws.send("reloadFull");
+		            }
+				} catch(e){}
+			}
+			const watcher =  chokidar.watch(watchTarget)
+				.on("ready",()=>{	 
+					setTimeout(() => {
+						readyStat = 1
+						try {
+			     		ws.send("Watcher allready")
+			     	} catch(e){}
+					}, 100);
+				 })
+				.on("add",tryReloadStat)
+				.on("change",tryReloadStat)
+				.on("ulink",tryReloadStat)
 		})
-		 ws.on("message",(msg)=>{
-		 	console.log(msg)
-		    setInterval(()=>{
-		    	if (is_dc == 0 ) {
-		 			try {
-		 				ws.send("hello world")
-		 			} catch(e) {
-
-		 			}
-		 		}
-		 	},100)
-		 })
 	})
 }
 
