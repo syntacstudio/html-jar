@@ -14,6 +14,10 @@ class HomeController extends Controller {
 	async index({req,res,next}) {
 		return view("index");
 	}	
+	//api example
+	async api({req,res}) {
+		return {"status":"connected"};
+	}
 }
 
 module.exports = HomeController;
