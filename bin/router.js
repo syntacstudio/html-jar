@@ -35,7 +35,7 @@ async function Get(route,controller,param=null) {
 		}
 		async function _send() {
 			return new Promise(async function(resolve,reject) {
-				var render =   await Render(req,_res,_next,controller);
+				let render =   await Render(req,_res,_next,controller);
 				Promise.resolve(res.send(render))
 			})
 		}
@@ -77,7 +77,7 @@ async function Post(route,controller,param=null) {
 		}
 		async function _send() {
 			return new Promise(async function(resolve,reject) {
-				var render =   await Render(req,_res,_next,controller);
+				let render =   await Render(req,_res,_next,controller);
 				Promise.resolve(res.send(render))
 			})
 		}
@@ -111,8 +111,13 @@ async function Group(route,func) {
 	})
 
 }    
-
 */
+
+async function Socket() {
+
+}
+
+
 module.exports  = {
 	Get ,
 	Post ,
