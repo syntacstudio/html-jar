@@ -4,14 +4,20 @@ const fs = require('fs')
 const serverless = require('serverless-http');
 const moment = require('moment');
 const https = require('https')
-
+import { App , Route } from "./skeleton";
 /**
 ** This basic data 
 ** @note please dont modify :)
 **/
-import { App , Route } from "./skeleton";
 //Load  Controllers
 use("bootstrap/autoloader/Controller");
+
+// requiring  autoload file
+Route.get("/socket/autoload.js",async (req,res)=> {
+	let file  =  await fs.readFileSync(base("/components/socket.js"));
+	return res.send(file);
+})
+
 
 
 // create logging 
@@ -30,6 +36,8 @@ App.use((err,req,res,next)=>{
 })
 
 // use router 
+if (process.env.WEBSOCKET == "true") use("routes.socket.js");
+use("routes.api.js");
 use("routes.web.js");
 //Use public dir
 App.use(express.static(base("public")));
@@ -54,6 +62,34 @@ App.use(async (err, req, res, next)=> {
 App.use((err,req,res)=>{
 	return res.send(err);
 })
+
+// websocket for autoload 
+if (process.env.WEBSOCKET == "true") {
+	Route.ws("/skeleton/autoload",(ws,req)=>{
+		let is_dc = 0;
+		ws.on('close',function(msg) {
+			is_dc = 1;
+			console.log("Client diconnected from websocket autoload"); 
+		})
+		ws.on("connect",function(msg) {
+			console.log("connected")
+		})
+		 ws.on("message",(msg)=>{
+		 	console.log(msg)
+		    setInterval(()=>{
+		    	if (is_dc == 0 ) {
+		 			try {
+		 				ws.send("hello world")
+		 			} catch(e) {
+
+		 			}
+		 		}
+		 	},100)
+		 })
+	})
+}
+
+
 // start server
 if (process.env.WEB_SERVER == "netlify") {
 	App.use('/.netlify/functions/server',Route);
