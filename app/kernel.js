@@ -3,7 +3,7 @@
 ** @param middleware  contructor
 **/
 const middlewares  =  {
-	Auth:'app.middleware.auth'
+	//example : Auth:'app.middleware.auth' 
 }
 
 
