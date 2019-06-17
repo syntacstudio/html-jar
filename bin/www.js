@@ -4,14 +4,22 @@ const fs = require('fs')
 const serverless = require('serverless-http');
 const moment = require('moment');
 const https = require('https')
-
+import { App , Route } from "./skeleton";
+const chokidar = require('chokidar');
+const watchTarget = [base("/resources") , base("/public")];
 /**
 ** This basic data 
 ** @note please dont modify :)
 **/
-import { App , Route } from "./skeleton";
 //Load  Controllers
 use("bootstrap/autoloader/Controller");
+
+// requiring  autoload file
+Route.get("/socket/autoload.js",async (req,res)=> {
+	let file  =  await fs.readFileSync(base("/components/socket.js"));
+	return res.send(file);
+})
+
 
 
 // create logging 
@@ -39,6 +47,8 @@ App.use((err,req,res,next)=>{
 })
 
 // use router 
+if (process.env.WEBSOCKET == "true") use("routes.socket.js");
+use("routes.api.js");
 use("routes.web.js");
 //Use public dir
 App.use(express.static(base("public")));
@@ -63,6 +73,45 @@ App.use(async (err, req, res, next)=> {
 App.use((err,req,res)=>{
 	return res.send(err);
 })
+
+// websocket for autoload 
+if (process.env.WEBSOCKET == "true" && process.env.AUTOLOAD == "true") {
+	Route.ws("/skeleton/autoload",(ws,req)=>{
+		let is_dc = 0;
+		ws.on('close',function(msg) {
+			console.log("Client diconnected from autoload socket"); 
+		})
+		ws.on("message",(msg)=>{
+			let readyStat = 0;
+			const tryReloadStat = (file)=> {
+				if (readyStat == 1) {
+					console.log("Trying send reload request to client ....")
+				}
+				try {
+					if (file.includes("sass") || file.includes("SASS") || file.includes("css") || file.includes("CSS")) {
+		            	if (readyStat == 1 ) return  ws.send("reloadCss");
+		        	} else {
+		             	if (readyStat == 1) return ws.send("reloadFull");
+		            }
+				} catch(e){}
+			}
+			const watcher =  chokidar.watch(watchTarget)
+				.on("ready",()=>{	 
+					setTimeout(() => {
+						readyStat = 1
+						try {
+			     		ws.send("Watcher allready")
+			     	} catch(e){}
+					}, 100);
+				 })
+				.on("add",tryReloadStat)
+				.on("change",tryReloadStat)
+				.on("ulink",tryReloadStat)
+		})
+	})
+}
+
+
 // start server
 if (process.env.WEB_SERVER == "netlify") {
 	App.use('/.netlify/functions/server',Route);

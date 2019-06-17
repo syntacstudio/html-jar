@@ -2,10 +2,13 @@
 if ('WebSocket' in window) {
   (function () {
     var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
-    var address = protocol + window.location.host + window.location.pathname + '/ws';
+    var address = protocol + window.location.host + window.location.pathname + 'skeleton/autoload';
     var socket = new WebSocket(address);
+    socket.onopen = ()=> {
+      socket.send("try autoload !");
+    }
     socket.onmessage = async  function (result) {
-    //console.log(result.data)
+      if (result.data != 'reloadFull' && result.data != 'reloadCss' ) { console.log(result.data)}
       if (result.data == 'reloadFull') {
         window.location.reload();
       } else if (result.data == 'reloadCss') {
@@ -24,11 +27,14 @@ if ('WebSocket' in window) {
       }
     };
     socket.onclose =  async function(err) {
-       window.location.reload();
+      console.log("Server was closed \nTrying reload resources");
+      window.location.reload();
+
     }
     socket.onerror = function (msg) {
-        window.location.reload();
+      console.log("Server autoload was error \nTrying reload resources");
+      window.location.reload();
     }
   })();
-  console.log("Autoload Is Ready to Use");
+  console.log("Preparing autoload watcher");
 }
