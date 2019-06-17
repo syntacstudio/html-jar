@@ -113,13 +113,16 @@ async function Group(route,func) {
 }    
 */
 
-async function Socket() {
-
+async function Socket(route,func) {
+	return Route.ws(route,function(ws,req){
+		return func({ws,req});
+	});
 }
 
 
 module.exports  = {
 	Get ,
 	Post ,
+	Socket
 	//Group
 };
