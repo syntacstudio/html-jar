@@ -16,6 +16,7 @@ const cookieParser = require('cookie-parser');
 const csrfProtection = csrf({ cookie: true });
 const parseForm = bodyParser.urlencoded({ extended: false })
 const App  =  express();
+const expressWs = require('express-ws')(App);
 global.App  =  App;
 App.use(cookieParser());
 App.use(bodyParser.json());
@@ -41,6 +42,12 @@ Route.group("/bambang",function(Route) {
 })
 */
 
+/*
+/// configuration ws
+expressWs.getWss().on('connection', function(ws) {
+  console.log('connection open');
+});
+*/
 
 global.Route =  Route;
 global.parseForm = parseForm;
