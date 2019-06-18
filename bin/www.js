@@ -7,6 +7,7 @@ const https = require('https')
 import { App , Route } from "./skeleton";
 const chokidar = require('chokidar');
 const watchTarget = [base("/resources") , base("/public")];
+
 //Use the writer to html
 if (process.env.COMPILE == "true") use("/bin/writter");
 /**
@@ -26,7 +27,6 @@ Route.get("/socket/autoload.js",async (req,res)=> {
 
 // create logging 
 if (process.env.LOGGING == "true") {
-	console.log("Activating logging mode")
 	App.use("/",function(req,res,next) {
 		console.log(`[${moment().format("dddd MMMM HH:mm:ss  YYYY")}] ${(process.env.ssl=="true"?"Https://":"Http://")+process.env.HOST+":"+process.env.PORT} [${res.statusCode}] : ${req.url}` )
 		return next();
@@ -34,13 +34,14 @@ if (process.env.LOGGING == "true") {
 }
 //enable cors mode
 App.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  res.header("X-Powered-By","Htmljar based on Express");
-  res.header('Access-Control-Allow-Credentials', true);
-  next();
+   res.header("Access-Control-Allow-Origin", "*");
+   res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+   res.header("X-Powered-By","Htmljar based on Express");
+   res.header('Access-Control-Allow-Credentials', true);
+   next();
 });
+
 // view if error hr
 App.use((err,req,res,next)=>{
 	if (req.xhr) {
@@ -52,30 +53,15 @@ App.use((err,req,res,next)=>{
 // use router 
 if (process.env.WEBSOCKET == "true") use("routes.socket.js");
 use("routes.api.js");
-use("routes.web.js");
-//Use public dir
-App.use(express.static(base("public")));
+if(process.env.ROUTER != "static") use("routes.web.js");
 // use router
 if (process.env.WEB_SERVER == "false") {
 	App.use(Route);
 }
-// 404
-App.use(async function(req, res, next) {
-  res.status(404).send(await view("404"));
-})
-// bad csurf
-App.use(async (err, req, res, next)=> {
-    if (err.code !== 'EBADCSRFTOKEN') return next(err);
-    let error  = {};
-		error["status"] = "403";
-		error["name"] =  "Session expired";
-		error["stack"] =  `Session has expired or tampered with`;
-    res.status(403).send(await view("components/errors",{err:error}) );
-});
-
-App.use((err,req,res)=>{
-	return res.send(err);
-})
+//Use public dir
+App.use(express.static(base("public")));
+// use route configuration stat
+use("routes.stat.js");
 
 // websocket for autoload 
 if (process.env.WEBSOCKET == "true" && process.env.AUTOLOAD == "true") {
@@ -113,7 +99,6 @@ if (process.env.WEBSOCKET == "true" && process.env.AUTOLOAD == "true") {
 		})
 	})
 }
-
 
 // start server
 if (process.env.WEB_SERVER == "netlify") {
