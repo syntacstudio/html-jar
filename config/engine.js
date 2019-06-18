@@ -82,7 +82,7 @@ global.view  =  async (path,param = "",is_write=false)=> {
 			err["stack"] =  `${e} On ${base("resources/views/"+path)}.edge`;
 			file =  edge.render("components/errors",{err:err});
 	}
-	if (is_write == false) file =  makeSocket(await file);
+	file =  makeSocket(await file);
 	if (process.env.PRETIFY_HTML == "true") file = formatter.render(file);
 	return file;
 }
