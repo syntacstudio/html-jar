@@ -5,9 +5,9 @@ const Route =  use("bin/router")
 **/ 
 
 /* Example
-Route.Socket("/example/dumy",function({res,ws}) {
+Route.Socket("/example/dumy", ({res,ws})=> {
 	ws.on("message",(msg)=> {
-		console.log("Socket say : "+msg)
+		console.log("Socket says : "+msg)
 		ws.send("hello")
 	})
 })
