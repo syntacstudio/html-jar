@@ -7,6 +7,8 @@ const https = require('https')
 import { App , Route } from "./skeleton";
 const chokidar = require('chokidar');
 const watchTarget = [base("/resources") , base("/public")];
+//Use the writer to html
+if (process.env.COMPILE == "true") use("/bin/writter");
 /**
 ** This basic data 
 ** @note please dont modify :)
@@ -24,6 +26,7 @@ Route.get("/socket/autoload.js",async (req,res)=> {
 
 // create logging 
 if (process.env.LOGGING == "true") {
+	console.log("Activating logging mode")
 	App.use("/",function(req,res,next) {
 		console.log(`[${moment().format("dddd MMMM HH:mm:ss  YYYY")}] ${(process.env.ssl=="true"?"Https://":"Http://")+process.env.HOST+":"+process.env.PORT} [${res.statusCode}] : ${req.url}` )
 		return next();
@@ -79,13 +82,13 @@ if (process.env.WEBSOCKET == "true" && process.env.AUTOLOAD == "true") {
 	Route.ws("/skeleton/autoload",(ws,req)=>{
 		let is_dc = 0;
 		ws.on('close',function(msg) {
-			console.log("Client diconnected from autoload socket"); 
+			console.log(`[Status : disconnect] [Message : Client diconnected from autoload socket] `); 
 		})
 		ws.on("message",(msg)=>{
 			let readyStat = 0;
 			const tryReloadStat = (file)=> {
 				if (readyStat == 1) {
-					console.log("Trying send reload request to client ....")
+					console.log(`[Status : waiting to reload] [Message : Trying send reload request to client]`)
 				}
 				try {
 					if (file.includes("sass") || file.includes("SASS") || file.includes("css") || file.includes("CSS")) {
@@ -106,7 +109,7 @@ if (process.env.WEBSOCKET == "true" && process.env.AUTOLOAD == "true") {
 				 })
 				.on("add",tryReloadStat)
 				.on("change",tryReloadStat)
-				.on("ulink",tryReloadStat)
+				.on("unlink",tryReloadStat)
 		})
 	})
 }

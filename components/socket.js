@@ -2,7 +2,7 @@
 if ('WebSocket' in window) {
   (function () {
     var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
-    var address = protocol + window.location.host + window.location.pathname + 'skeleton/autoload';
+    var address = protocol + window.location.host +'/skeleton/autoload';
     var socket = new WebSocket(address);
     socket.onopen = ()=> {
       socket.send("try autoload !");
@@ -28,12 +28,12 @@ if ('WebSocket' in window) {
     };
     socket.onclose =  async function(err) {
       console.log("Server was closed \nTrying reload resources");
-      window.location.reload();
+      setTimeout(()=>window.location.reload(),300);
 
     }
     socket.onerror = function (msg) {
       console.log("Server autoload was error \nTrying reload resources");
-      window.location.reload();
+       setTimeout(()=>window.location.reload(),300);
     }
   })();
   console.log("Preparing autoload watcher");

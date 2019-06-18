@@ -2,7 +2,7 @@
   "restartable": "rs",
   "ignore": [
     ".git",
-    "node_modules/**/node_modules",
+    "node_modules",
     "resources",
     "data"
   ],
@@ -11,8 +11,6 @@
     "js": "node --harmony"
   },
   "watch": [
-    "app",
-    "bin",
     "./"
   ],
   "ext": "js,json"
