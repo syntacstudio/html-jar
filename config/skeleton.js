@@ -39,8 +39,33 @@ const config =  [
 		}
 	} , {
 		name : "route",
-		function: function(route) {
-			return Routes[route] ? Routes[route] : null; 
+		function: function(route,param=false) {
+			let routeRef =  Routes[route].substr(1,Routes[route].length);
+				routeRef = routeRef.split("/");
+			let leflector  = "";
+			if (param != false) {
+				for(var i = 0 ; i < routeRef.length ; i++ ) {
+					if (typeof param == "object") {
+						// if multiparameter
+						let encQuery = 0;
+						for (var key in param) {
+						 	if(routeRef[i] == (":"+key)) {
+						 		leflector += "/"+ param[key]
+						 		encQuery = 1;
+						 	} 
+						}
+						if (encQuery == 0 ) {
+							leflector += "/"+routeRef[i];
+						}
+
+					} else {
+						// if single parameter
+						leflector += "/"+(routeRef[i].includes(":") ? param : routeRef[i] );
+					}
+				}
+			}
+			
+			return leflector.length > 0 ? leflector : (Routes[route] ? Routes[route] : null); 
 		}
 	} , {
 		name : "loadData" ,
@@ -51,7 +76,7 @@ const config =  [
 				throw e;
 			}
 		} 
-	}
+	} 
 ]
 
 

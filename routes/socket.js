@@ -1,11 +1,11 @@
 "use strict"
-const Route =  use("bin/router")
+const Route =   use("bin/router/socket")
 /**
 ** Creating base socket route 
 **/ 
 
 /* Example
-Route.Socket("/example/dumy", ({res,ws})=> {
+Route.socket("/example/dumy", ({res,ws})=> {
 	ws.on("message",(msg)=> {
 		console.log("Socket says : "+msg)
 		ws.send("hello")

@@ -1,6 +1,8 @@
 "use strict"
-const Route =  use("bin/router")
+const Route =  use("bin/router/web")
 /**
 ** Creating base route 
 **/ 
-Route.Get("/",HomeController.index,{name:"home"});	
+Route.get("/",HomeController.index,{name:"home"});
+
+Route.get("/demo/:id/:key",HomeController.index,{name:"test"});
