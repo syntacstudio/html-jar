@@ -7,8 +7,8 @@ edge.global("csrf",function() {
 	return '<input type="hidden" name="_csrf" value="'+process.env.csrfToken+'">';
 })
 // Route
-edge.global("route",function(req =  false) {
-	return req ? Routes[req] : Routes ;
+edge.global("route",function(req , param=false) {
+	return route(req,param) ;
 })
 // method field
 edge.global("method",function(method) {
