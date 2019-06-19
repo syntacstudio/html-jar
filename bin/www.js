@@ -38,7 +38,7 @@ App.use(function(req, res, next) {
    res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
    res.header('Access-Control-Allow-Credentials', true);
-   if (process.env.SSL == "true") {
+   sif (process.env.SSL == "true") {
    		res.removeHeader("X-Powered-By");
    } else {
    		res.header("X-Powered-By","Htmljar based on Express");
@@ -59,7 +59,7 @@ if (process.env.WEBSOCKET == "true") use("routes.socket.js");
 use("routes.api.js");
 if(process.env.ROUTER != "static") use("routes.web.js");
 // use router
-if (process.env.WEB_SERVER == "false") {
+if (process.env WEB_SERVER == "false") {
 	App.use(Route);
 }
 //Use public dir
@@ -111,10 +111,13 @@ if (process.env.WEB_SERVER == "netlify") {
 	module.exports.handler = serverless(App);
 } else {
 	if (process.env.SSL == "true") {
-			https.createServer({
-				key :fs.readFileSync(base("/ssl/server.key"),"utf8"),
-				cert : fs.readFileSync(base("/ssl/server.cert","utf8"))
-			},App).listen(process.env.PORT, process.env.HOST,function() {
+			const credential  = {
+				key:fs.readFileSync(base("/ssl/certificate.key"),"utf8"),
+				cert:fs.readFileSync(base("/ssl/certificate.cert"),"utf8"),
+				requestCert: false,
+    			rejectUnauthorized: false
+			}
+			https.createServer(credential,App).listen(process.env.PORT, process.env.HOST,function() {
 				console.log(`Application listen on Https://${process.env.HOST}:${process.env.PORT}`)
 			})
 		} else {
