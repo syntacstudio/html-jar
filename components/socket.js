@@ -28,12 +28,12 @@ if ('WebSocket' in window) {
     };
     socket.onclose =  async function(err) {
       console.log("Server was closed \nTrying reload resources");
-      setTimeout(()=>window.location.reload(),300);
+      window.location.reload();
 
     }
     socket.onerror = function (msg) {
       console.log("Server autoload was error \nTrying reload resources");
-       setTimeout(()=>window.location.reload(),300);
+      window.location.reload();
     }
   })();
   console.log("Preparing autoload watcher");
