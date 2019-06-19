@@ -1,3 +1,5 @@
+"use strict"
+const fs =  require("fs");
 // config to env 
 edge.global("config",function(req =  false){
 	return req ? process.env[req] : process.env ;
@@ -41,6 +43,11 @@ edge.global("paginate",function(paginate,param={next:null,prev:null}) {
 		</nav>
 		`
 	return template;
+})
+// this is for laod data from global load data response willbe json
+edge.global("loadData",(name)=>{
+	let file  =  fs.readFileSync(base("/data/")+(name.includes(".json") ? name : name+".json")).toString("utf8");
+	return JSON.parse(file);
 })
 
 
