@@ -27,8 +27,8 @@ Route.get("/socket/autoload.js",async (req,res)=> {
 
 // create logging 
 if (process.env.LOGGING == "true") {
-	App.use("/",function(req,res,next) {
-		console.log(`[${moment().format("dddd MMMM HH:mm:ss  YYYY")}] ${(process.env.ssl=="true"?"Https://":"Http://")+process.env.HOST+":"+process.env.PORT} [${res.statusCode}] : ${req.url}` )
+	App.use((req,res,next)=> {
+		console.log(`[${moment().format("dddd MMMM HH:mm:ss  YYYY")}] ${(process.env.SSL=="true"?"Https://":"Http://")+process.env.HOST+":"+process.env.PORT} [${res.statusCode}] : ${req.url}` )
 		return next();
 	})
 }
@@ -37,8 +37,12 @@ App.use(function(req, res, next) {
    res.header("Access-Control-Allow-Origin", "*");
    res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-   res.header("X-Powered-By","Htmljar based on Express");
    res.header('Access-Control-Allow-Credentials', true);
+   if (process.env.SSL == "true") {
+   		res.removeHeader("X-Powered-By");
+   } else {
+   		res.header("X-Powered-By","Htmljar based on Express");
+   }
    next();
 });
 
