@@ -3,7 +3,8 @@ node_js:
   - '8'
 branches:
   only:
-    - master
+    - base-doc
+    - gh-pages
 cache:
   yarn: true
 script:
