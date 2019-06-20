@@ -5,6 +5,7 @@
 const Controller  =  use("app/Controller")
 const Paginate = use("/config/pagination").Paginate;
 const CrudMaster = use("/config/crud");
+const Db =  use("/app/Database");
 
 class HomeController extends Controller {
 	constructor() {

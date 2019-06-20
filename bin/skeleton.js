@@ -6,7 +6,6 @@
 **/ 
 const express  =  require("express");
 require('events').EventEmitter.defaultMaxListeners = 0;
-const env =  require("dotenv").config();
 const csrf = require('csurf');
 const compression = require('compression')
 const path  =  require("path");

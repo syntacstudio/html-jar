@@ -38,7 +38,7 @@ App.use(function(req, res, next) {
    res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
    res.header('Access-Control-Allow-Credentials', true);
-   sif (process.env.SSL == "true") {
+   if (process.env.SSL == "true") {
    		res.removeHeader("X-Powered-By");
    } else {
    		res.header("X-Powered-By","Htmljar based on Express");
@@ -59,7 +59,7 @@ if (process.env.WEBSOCKET == "true") use("routes.socket.js");
 use("routes.api.js");
 if(process.env.ROUTER != "static") use("routes.web.js");
 // use router
-if (process.env WEB_SERVER == "false") {
+if (process.env.WEB_SERVER == "false") {
 	App.use(Route);
 }
 //Use public dir
