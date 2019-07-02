@@ -18,6 +18,10 @@ class HomeController extends Controller {
 	async api({req,res}) {
 		return {"status":"connected"};
 	}
+	/* dont use this */
+	async register({req,res}) {
+		return "demo";
+	}
 }
 
 module.exports = HomeController;
