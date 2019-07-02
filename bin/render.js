@@ -2,7 +2,7 @@
 ** This for action to render  
 **/
 const Render =  async function(req,res,next,controller) {
-	process.env.csrfToken = req.csrfToken();
+	process.env.csrfToken = req.cookies._csrf;
 	try {
 		return  await controller({req:req,res:res,next:next});
 	} catch(e) {
