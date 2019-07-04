@@ -1,5 +1,5 @@
-import { App } from "../skeleton";
-import { Render  } from "../render";
+import { App } from '../skeleton';
+import { Render  } from '../render';
 
 
 // route stat
@@ -7,7 +7,7 @@ module.exports.stat = async(stat,func)=>{
 	App.use(async(req,res,next)=>{
 		res.status(stat)
 		let elres = await  func({req,res,next});
-		if(typeof elres == "string") {
+		if(typeof elres == 'string') {
 			return res.send(elres);
 		} 
 

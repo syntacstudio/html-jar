@@ -22,7 +22,6 @@ App.use(bodyParser.json());
 App.use(bodyParser.urlencoded({ extended: true }))
 App.use(compression())
 App.use(methodOverride('X-HTTP-Method-Override'))
-require('express-router-group');
 const Route = express.Router();
 
 // use method overide for accept method put and anymore

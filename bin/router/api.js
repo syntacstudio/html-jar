@@ -1,12 +1,12 @@
-"use strict"
+'use strict'
 /**
 ** Creating expert router
 **/
-import { App ,  Route  } from "../skeleton";
-import { Render  } from "../render";
+import { App ,  Route  } from '../skeleton';
+import { Render  } from '../render';
 
-use("app/kernel");
-global["Routes"] =  {};
+use('app/kernel');
+global['Routes'] =  {};
 let _route = {};
 /**
 ** registering components
@@ -20,9 +20,9 @@ let _route = {};
 module.exports.get = async(route,controller,param=null)=> {
 	// creatign global name
 	try {
-		global["Routes"][param["name"]] =  route;
+		global['Routes'][param['name']] =  route;
 	} catch(e) {}
-	Route.get("/api"+route,csrfProtection, async function(req,res,next){
+	Route.get('/api'+route,csrfProtection, async function(req,res,next){
 		let _res = {};
 		let _next  = function() {
 			return next();
@@ -40,7 +40,7 @@ module.exports.get = async(route,controller,param=null)=> {
 			})
 		}
 		if (param) {
-			if (param["middleware"]) {
+			if (param['middleware']) {
 				try {
 					if (typeof param.middleware == 'object' ) {
 						for (var i = 0; i <  param.middleware.length; i++) {
@@ -62,9 +62,9 @@ module.exports.get = async(route,controller,param=null)=> {
 module.exports.post =  async(route,controller,param=null)=> {
 	// creatign global name
 	try {
-		global["Routes"][param["name"]] =  route;
+		global['Routes'][param['name']] =  route;
 	} catch(e) {}
-	Route.post("/api"+route, parseForm, async function(req,res,next){
+	Route.post('/api'+route, parseForm, async function(req,res,next){
 		let _res = {};
 		let _next  = function() {
 			return next();
@@ -82,7 +82,7 @@ module.exports.post =  async(route,controller,param=null)=> {
 			})
 		}
 		if (param) {
-			if (param["middleware"]) {
+			if (param['middleware']) {
 				try {
 					if (typeof param.middleware == 'object' ) {
 						for (var i = 0; i <  param.middleware.length; i++) {
@@ -104,9 +104,9 @@ module.exports.post =  async(route,controller,param=null)=> {
 module.exports.put = async(route,controller,param=null)=> {
 	// creatign global name
 	try {
-		global["Routes"][param["name"]] =  route;
+		global['Routes'][param['name']] =  route;
 	} catch(e) {}
-	Route.put("/api"+route, parseForm, async function(req,res,next){
+	Route.put('/api'+route, parseForm, async function(req,res,next){
 		let _res = {};
 		let _next  = function() {
 			return next();
@@ -124,7 +124,7 @@ module.exports.put = async(route,controller,param=null)=> {
 			})
 		}
 		if (param) {
-			if (param["middleware"]) {
+			if (param['middleware']) {
 				try {
 					if (typeof param.middleware == 'object' ) {
 						for (var i = 0; i <  param.middleware.length; i++) {
@@ -148,9 +148,9 @@ module.exports.put = async(route,controller,param=null)=> {
 module.exports.delete =  async(route,controller,param=null)=> {
 	// creatign global name
 	try {
-		global["Routes"][param["name"]] =  route;
+		global['Routes'][param['name']] =  route;
 	} catch(e) {}
-	Route.delete("/api"+route, parseForm, async function(req,res,next){
+	Route.delete('/api'+route, parseForm, async function(req,res,next){
 		let _res = {};
 		let _next  = function() {
 			return next();
@@ -168,7 +168,7 @@ module.exports.delete =  async(route,controller,param=null)=> {
 			})
 		}
 		if (param) {
-			if (param["middleware"]) {
+			if (param['middleware']) {
 				try {
 					if (typeof param.middleware == 'object' ) {
 						for (var i = 0; i <  param.middleware.length; i++) {

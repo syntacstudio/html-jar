@@ -1,11 +1,11 @@
-"use strict"
+'use strict'
 /**
 ** Creating expert router
 **/
-import { App ,  Route  } from "../skeleton";
-import { Render  } from "../render";
+import { App ,  Route  } from '../skeleton';
+import { Render  } from '../render';
 
-use("app/kernel");
+use('app/kernel');
 
 /**
 ** Using websocket

@@ -3,6 +3,8 @@ const express  =  require("express");
 const fs = require('fs')
 const serverless = require('serverless-http');
 const moment = require('moment');
+const session = require('cookie-session')
+const Keygrip = require('keygrip'); 
 const https = require('https')
 import { App , Route } from "./skeleton";
 const chokidar = require('chokidar');
@@ -23,12 +25,22 @@ Route.get("/socket/autoload.js",async (req,res)=> {
 	return res.send(file);
 })
 
-
-
+App.use(session({
+	name:'session',
+	keys: new Keygrip(JSON.parse(process.env.SESSION_KEY), 'SHA384', 'base64'),
+	cookie: {
+		secure:true ,
+		httpOnly:true ,
+		domain:process.env.DOMAIN ,
+		path:process.env.SESSION_PATH ,
+		expires:parseInt(process.env.SESSION_MAX_AGE) * 60 * 60 * 1000
+	}
+}))
+	
 // create logging 
 if (process.env.LOGGING == "true") {
 	App.use((req,res,next)=> {
-		console.log(`[${moment().format("dddd MMMM HH:mm:ss  YYYY")}] ${(process.env.SSL=="true"?"Https://":"Http://")+process.env.HOST+":"+process.env.PORT} [${res.statusCode}] : ${req.url}` )
+		console.log(`[${process.pid}] [${moment().format("ddd MMM HH:mm:ss YYY")}] ${(process.env.SSL=="true"?"Https://":"Http://")+process.env.HOST+":"+process.env.PORT} [${res.statusCode}] : ${req.url}` )
 		return next();
 	})
 }
