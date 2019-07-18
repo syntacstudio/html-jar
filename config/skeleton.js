@@ -9,7 +9,7 @@ const fs  = require('fs');
 **/
 
 /**
-** COnfiguration skeleton 
+** COnfiguration skeleton
 **/
 const config =  [
 	{
@@ -52,7 +52,7 @@ const config =  [
 						 	if(routeRef[i] == (':'+key)) {
 						 		leflector += '/'+ param[key]
 						 		encQuery = 1;
-						 	} 
+						 	}
 						}
 						if (encQuery == 0 ) {
 							leflector += '/'+routeRef[i];
@@ -64,8 +64,8 @@ const config =  [
 					}
 				}
 			}
-			
-			return leflector.length > 0 ? leflector : (Routes[route] ? Routes[route] : null); 
+
+			return leflector.length > 0 ? leflector : (Routes[route] ? Routes[route] : null);
 		}
 	} , {
 		name : 'loadData' ,
@@ -75,8 +75,8 @@ const config =  [
 			} catch(e) {
 				throw e;
 			}
-		} 
-	} 
+		}
+	}
 ]
 
 
