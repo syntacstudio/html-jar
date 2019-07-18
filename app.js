@@ -1,8 +1,14 @@
 "use strict"
 
-require("dotenv").config();
+const env = require('dotenv').config();
 
-// start 
-require = require("esm")(module)
-module.exports = require('./bin/www.js') 
+/**
+** This application is based on express
+** @based express
+** @author Tofikhidayat
+** @type web engine
+** @lisence MIT
+**/
 
+require = require('esm')(module)
+module.exports = require('./bin/www.js')
