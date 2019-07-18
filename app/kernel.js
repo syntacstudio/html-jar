@@ -1,6 +1,6 @@
 'use strict'
 /**
-** Making middleware
+** Sprecifict middleware
 ** @param middleware  contructor
 **/
 const middlewares  =  {
@@ -9,29 +9,26 @@ const middlewares  =  {
 }
 
 
+/**
+** Global middleware
+** @param middleware , contructor
+**/
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//Migrate to global
-global['middleware'] = {}
-for(var i in middlewares ) {
-	global['middleware'][i] = use(middlewares[i]);
-	global.middleware[i] =  eval(`new ${middleware[i]}()`);
+const globalMiddlewares = {
+	csrf : {
+		enable: true,
+		path: 'app.middleware.csrf',
+		method: ['POST', 'PUT', 'DELETE']
+	}
 }
+
+
+
+
+
+
+
+
+
+
+module.exports = { middlewares , globalMiddlewares }
