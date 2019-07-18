@@ -40,7 +40,7 @@ class JsonCrud  {
 	async all() {
 		return JSON.parse(await this.read());
 	}
-	// write 
+	// write
 	async write(data) {
 		await fs.writeFile(base('/data/'+this.fileName+'.json'),data,function(err){
 				  if (err) throw err;
@@ -68,7 +68,7 @@ class JsonCrud  {
 		} else {
 			handleId(newData)
 		}
-		await this.write(JSON.stringify(tmpObj)) 
+		await this.write(JSON.stringify(tmpObj))
 
 	}
 	async update(where,search,param) {
@@ -99,12 +99,12 @@ class JsonCrud  {
 		})
 		await this.write(JSON.stringify(next));
 		return true;
-	} 
+	}
 
 }
 // protityping array
 
-// where 
+// where
 Array.prototype.where =  function(param,where) {
 		let _obj  =  [];
 		this.forEach((item)=>{
