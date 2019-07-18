@@ -1,19 +1,21 @@
 "use strict"
+
+import { App , Route } from "./skeleton";
+
 const express  =  require("express");
 const fs = require('fs')
 const serverless = require('serverless-http');
 const moment = require('moment');
 const session = require('cookie-session')
-const Keygrip = require('keygrip'); 
+const Keygrip = require('keygrip');
 const https = require('https')
-import { App , Route } from "./skeleton";
 const chokidar = require('chokidar');
 const watchTarget = [base("/resources") , base("/public")];
 
 //Use the writer to html
 if (process.env.COMPILE == "true") use("/bin/writter");
 /**
-** This basic data 
+** This basic data
 ** @note please dont modify :)
 **/
 //Load  Controllers
@@ -27,17 +29,12 @@ Route.get("/socket/autoload.js",async (req,res)=> {
 
 App.use(session({
 	name:'session',
-	keys: new Keygrip(JSON.parse(process.env.SESSION_KEY), 'SHA384', 'base64'),
-	cookie: {
-		secure:true ,
-		httpOnly:true ,
-		domain:process.env.DOMAIN ,
-		path:process.env.SESSION_PATH ,
-		expires:parseInt(process.env.SESSION_MAX_AGE) * 60 * 60 * 1000
-	}
+	keys: new Keygrip(JSON.parse(process.env.SESSION_KEY), 'SHA384', 'base64')
 }))
-	
-// create logging 
+/// cookie
+ App.set('trust proxy', process.env.TRUST_PROXY == 'true' ? true : false)
+
+// create logging
 if (process.env.LOGGING == "true") {
 	App.use((req,res,next)=> {
 		console.log(`[${process.pid}] [${moment().format("ddd MMM HH:mm:ss YYY")}] ${(process.env.SSL=="true"?"Https://":"Http://")+process.env.HOST+":"+process.env.PORT} [${res.statusCode}] : ${req.url}` )
@@ -62,7 +59,7 @@ App.use((err,req,res,next)=>{
 	return res.send(view("components/errors.edge",{err:err}));
 })
 
-// use router 
+// use router
 if (process.env.WEBSOCKET == "true") use("routes.socket.js");
 use("routes.api.js");
 if(process.env.ROUTER != "static") use("routes.web.js");
@@ -75,12 +72,12 @@ App.use(express.static(base("public")));
 // use route configuration stat
 use("routes.stat.js");
 
-// websocket for autoload 
+// websocket for autoload
 if (process.env.WEBSOCKET == "true" && process.env.AUTOLOAD == "true") {
 	Route.ws("/skeleton/autoload",(ws,req)=>{
 		let is_dc = 0;
 		ws.on('close',function(msg) {
-			console.log(`[Status : disconnect] [Message : Client diconnected from autoload socket] `); 
+			console.log(`[Status : disconnect] [Message : Client diconnected from autoload socket] `);
 		})
 		ws.on("message",(msg)=>{
 			let readyStat = 0;
@@ -97,7 +94,7 @@ if (process.env.WEBSOCKET == "true" && process.env.AUTOLOAD == "true") {
 				} catch(e){}
 			}
 			const watcher =  chokidar.watch(watchTarget)
-				.on("ready",()=>{	 
+				.on("ready",()=>{
 					setTimeout(() => {
 						readyStat = 1
 						try {
