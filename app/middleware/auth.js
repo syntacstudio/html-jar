@@ -1,17 +1,17 @@
 'use strict'
 
 /**
- * default constructor middleware
+ * default constructor of middleware
  */
+
 class auth {
 
 
 	run({req,res,next}) {
-		console.log(req.cookies);
-		return true;
+		return next();
 	}
 
-	
+
 }
 
 module.exports = auth;
