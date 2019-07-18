@@ -2,8 +2,8 @@
 
 /**
 ** Setup configuration and Autoloader
-** 
-**/ 
+**
+**/
 const express  =  require("express");
 require('events').EventEmitter.defaultMaxListeners = 0;
 const csrf = require('csurf');
@@ -17,7 +17,7 @@ const parseForm = bodyParser.urlencoded({ extended: false })
 const App  =  express();
 const expressWs = require('express-ws')(App);
 global.App  =  App;
-App.use(cookieParser());
+App.use(cookieParser([JSON.parse(process.env.SESSION_KEY).toString()]));
 App.use(bodyParser.json());
 App.use(bodyParser.urlencoded({ extended: true }))
 App.use(compression())
@@ -32,13 +32,13 @@ App.use(methodOverride(function (req, res) {
     return method
   }
 }))
- 
+
 global.Route =  Route;
 global.parseForm = parseForm;
 global.csrfProtection =  csrfProtection;
-// requiring 
+// requiring
 require("../config/skeleton");
-// Use engine 
+// Use engine
 use("config/engine")
 // export modules
 module.exports  = {
