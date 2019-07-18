@@ -3,7 +3,11 @@
 ** Creating expert router
 **/
 import { App ,  Route  } from '../skeleton';
-import { Render  } from '../render';
+import { cookieSet } from '../../config/cookie';
+
+// import rendering
+const Render  = use('/bin/render').Render;
+
 
 use('app/kernel');
 global['Routes'] =  {};
@@ -16,7 +20,7 @@ let _route = {};
 ** Global creator
 **/
 
-// Method get 
+// Method get
 module.exports.get = async(route,controller,param=null)=> {
 	// creatign global name
 	try {
@@ -29,9 +33,15 @@ module.exports.get = async(route,controller,param=null)=> {
 		}
 		for(var item in res) {
 			let iname  = item;
-			_res[item] =  function(prop) {
-				return res[iname](prop);
-			} 
+			if (item == 'cookie') {
+				_res[item] =  function(param1=false,param2=false,param3=false,param4=false,param5=false) {
+					return res.cookie(param1,param2,cookieSet(param3),param4,param5);
+				}
+			} else {
+				_res[item] =  function(param1=false,param2=false,param3=false,param4=false,param5=false) {
+					return res[iname](param1,param2,param3,param4,param5);
+				}
+			}
 		}
 		async function _send() {
 			return new Promise(async function(resolve,reject) {
@@ -44,7 +54,7 @@ module.exports.get = async(route,controller,param=null)=> {
 				try {
 					if (typeof param.middleware == 'object' ) {
 						for (var i = 0; i <  param.middleware.length; i++) {
-							return middleware[param.middleware[i]].run({req:req,res:_res,next:_next}) === true ? _send() : false;		
+							return middleware[param.middleware[i]].run({req:req,res:_res,next:_next}) === true ? _send() : false;
 						}
 					}
 					else {
@@ -71,9 +81,15 @@ module.exports.post =  async(route,controller,param=null)=> {
 		}
 		for(var item in res) {
 			let iname  = item;
-			_res[item] =  function(prop) {
-				return res[iname](prop);
-			} 
+			if (item == 'cookie') {
+				_res[item] =  function(param1=false,param2=false,param3=false,param4=false,param5=false) {
+					return res.cookie(param1,param2,cookieSet(param3),param4,param5);
+				}
+			} else {
+				_res[item] =  function(param1=false,param2=false,param3=false,param4=false,param5=false) {
+					return res[iname](param1,param2,param3,param4,param5);
+				}
+			}
 		}
 		async function _send() {
 			return new Promise(async function(resolve,reject) {
@@ -86,7 +102,7 @@ module.exports.post =  async(route,controller,param=null)=> {
 				try {
 					if (typeof param.middleware == 'object' ) {
 						for (var i = 0; i <  param.middleware.length; i++) {
-							return middleware[param.middleware[i]].run({req:req,res:_res,next:_next}) === true ? _send() : false;		
+							return middleware[param.middleware[i]].run({req:req,res:_res,next:_next}) === true ? _send() : false;
 						}
 					}
 					else {
@@ -113,9 +129,15 @@ module.exports.put = async(route,controller,param=null)=> {
 		}
 		for(var item in res) {
 			let iname  = item;
-			_res[item] =  function(prop) {
-				return res[iname](prop);
-			} 
+			if (item == 'cookie') {
+				_res[item] =  function(param1=false,param2=false,param3=false,param4=false,param5=false) {
+					return res.cookie(param1,param2,cookieSet(param3),param4,param5);
+				}
+			} else {
+				_res[item] =  function(param1=false,param2=false,param3=false,param4=false,param5=false) {
+					return res[iname](param1,param2,param3,param4,param5);
+				}
+			}
 		}
 		async function _send() {
 			return new Promise(async function(resolve,reject) {
@@ -128,7 +150,7 @@ module.exports.put = async(route,controller,param=null)=> {
 				try {
 					if (typeof param.middleware == 'object' ) {
 						for (var i = 0; i <  param.middleware.length; i++) {
-							return middleware[param.middleware[i]].run({req:req,res:_res,next:_next}) === true ? _send() : false;		
+							return middleware[param.middleware[i]].run({req:req,res:_res,next:_next}) === true ? _send() : false;
 						}
 					}
 					else {
@@ -157,9 +179,15 @@ module.exports.delete =  async(route,controller,param=null)=> {
 		}
 		for(var item in res) {
 			let iname  = item;
-			_res[item] =  function(prop) {
-				return res[iname](prop);
-			} 
+			if (item == 'cookie') {
+				_res[item] =  function(param1=false,param2=false,param3=false,param4=false,param5=false) {
+					return res.cookie(param1,param2,cookieSet(param3),param4,param5);
+				}
+			} else {
+				_res[item] =  function(param1=false,param2=false,param3=false,param4=false,param5=false) {
+					return res[iname](param1,param2,param3,param4,param5);
+				}
+			}
 		}
 		async function _send() {
 			return new Promise(async function(resolve,reject) {
@@ -172,7 +200,7 @@ module.exports.delete =  async(route,controller,param=null)=> {
 				try {
 					if (typeof param.middleware == 'object' ) {
 						for (var i = 0; i <  param.middleware.length; i++) {
-							return middleware[param.middleware[i]].run({req:req,res:_res,next:_next}) === true ? _send() : false;		
+							return middleware[param.middleware[i]].run({req:req,res:_res,next:_next}) === true ? _send() : false;
 						}
 					}
 					else {

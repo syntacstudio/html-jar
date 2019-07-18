@@ -3,7 +3,9 @@
 ** Creating expert router
 **/
 import { App ,  Route  } from '../skeleton';
-import { Render  } from '../render';
+
+// import rendering
+const Render  = use('/bin/render').Render;
 
 use('app/kernel');
 
