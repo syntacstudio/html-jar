@@ -12,9 +12,9 @@ class HomeController extends Controller {
 	}
 	// index
 	async index({req,res,next}) {
-		//res.cookie('auth','helloworld');
+		res.cookie("auth","me");
 		return view('index');
-	}	
+	}
 	//api example
 	async api({req,res}) {
 		return {'status': 'connected'};
