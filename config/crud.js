@@ -1,6 +1,6 @@
-"use strict"
+'use strict'
 
-const fs  = require("fs");
+const fs  = require('fs');
 
 /**
 ** Creating crud master engine
@@ -15,12 +15,12 @@ class JsonCrud  {
 	// configuration
 	config() {
 		let nameFile  =  this.fileName;
-		fs.stat(base("/data/"+nameFile+".json"),function(err,stat) {
+		fs.stat(base('/data/'+nameFile+'.json'),function(err,stat) {
 			if (err &&  err.code === 'ENOENT') {
-				console.log("Data file not found \nCreating new data");
-				fs.writeFile(base("/data/"+nameFile+".json"),'[]',function(err){
+				console.log('Data file not found \nCreating new data');
+				fs.writeFile(base('/data/'+nameFile+'.json'),'[]',function(err){
 					if (err) throw err;
-					console.log("Base new data created successfull");
+					console.log('Base new data created successfull');
 				});
 			} else {
 				console.log(`File ${nameFile}.json already exists`);
@@ -31,7 +31,7 @@ class JsonCrud  {
 	async read() {
 		let nameFile  =  this.fileName;
 		try {
-			return await fs.readFileSync(base(`/data/${nameFile}.json`)).toString("utf8")
+			return await fs.readFileSync(base(`/data/${nameFile}.json`)).toString('utf8')
 		} catch (e) {
 			throw e;
 		}
@@ -40,11 +40,11 @@ class JsonCrud  {
 	async all() {
 		return JSON.parse(await this.read());
 	}
-	// write 
+	// write
 	async write(data) {
-		await fs.writeFile(base("/data/"+this.fileName+".json"),data,function(err){
+		await fs.writeFile(base('/data/'+this.fileName+'.json'),data,function(err){
 				  if (err) throw err;
-				  console.log("Base new data created successfull");
+				  console.log('Base new data created successfull');
 		});
 		return true;
 	}
@@ -55,7 +55,7 @@ class JsonCrud  {
 
 		let handleId = function(data) {
 			let hellObj  =  {};
-			hellObj["id"] = tmpObj.length == 0 ? 0 : tmpObj[tmpObj.length - 1].id + 1;
+			hellObj['id'] = tmpObj.length == 0 ? 0 : tmpObj[tmpObj.length - 1].id + 1;
 			for(var item in data) {
 				hellObj[item] =  data[item];
 			}
@@ -68,7 +68,7 @@ class JsonCrud  {
 		} else {
 			handleId(newData)
 		}
-		await this.write(JSON.stringify(tmpObj)) 
+		await this.write(JSON.stringify(tmpObj))
 
 	}
 	async update(where,search,param) {
@@ -99,12 +99,12 @@ class JsonCrud  {
 		})
 		await this.write(JSON.stringify(next));
 		return true;
-	} 
+	}
 
 }
 // protityping array
 
-// where 
+// where
 Array.prototype.where =  function(param,where) {
 		let _obj  =  [];
 		this.forEach((item)=>{

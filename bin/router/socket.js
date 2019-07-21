@@ -1,11 +1,13 @@
-"use strict"
+'use strict'
 /**
 ** Creating expert router
 **/
-import { App ,  Route  } from "../skeleton";
-import { Render  } from "../render";
+import { App ,  Route  } from '../skeleton';
 
-use("app/kernel");
+// import rendering
+const Render  = use('/bin/render').Render;
+
+use('app/kernel');
 
 /**
 ** Using websocket

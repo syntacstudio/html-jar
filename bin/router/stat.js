@@ -1,15 +1,21 @@
-import { App } from "../skeleton";
-import { Render  } from "../render";
+'use strict';
+/**
+** This for call status on http module
+** @param string, status, module
+**/
 
+import { App } from '../skeleton';
+// import rendering
+const Render  = use('/bin/render').Render;
 
 // route stat
 module.exports.stat = async(stat,func)=>{
 	App.use(async(req,res,next)=>{
 		res.status(stat)
 		let elres = await  func({req,res,next});
-		if(typeof elres == "string") {
+		if(typeof elres == 'string') {
 			return res.send(elres);
-		} 
+		}
 
 	})
 }

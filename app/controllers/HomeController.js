@@ -1,10 +1,10 @@
-"use strict"
+'use strict'
 /**
 ** Example controller
 **/
-const Controller  =  use("app/Controller")
-const Paginate = use("/config/pagination").Paginate;
-const CrudMaster = use("/config/crud");
+const Controller  =  use('app/Controller')
+const Paginate = use('/config/pagination').Paginate;
+const CrudMaster = use('/config/crud');
 
 class HomeController extends Controller {
 	constructor() {
@@ -12,11 +12,12 @@ class HomeController extends Controller {
 	}
 	// index
 	async index({req,res,next}) {
-		return view("index");
-	}	
+		res.cookie("auth","me");
+		return view('index');
+	}
 	//api example
 	async api({req,res}) {
-		return {"status":"connected"};
+		return {'status': 'connected'};
 	}
 }
 

@@ -1,31 +1,21 @@
-"use strict"
-const path  = require("path");
-const recursiveReadSync = require('recursive-readdir-sync');
+'use strict';
 
 /**
-** This file for load all controllers file and send to global data 
+** This file for load all controllers file and send to global data
 ** @param String ,  object
 ** @func eval , recursive
 ** @target root/app/controller
-**  
+**
 **/
 
-/**
-** @void Main
-**/
+const loadController =  async (controller,{req,res,next})=>{
+	let index = controller.split("@")
+	let col   = controller[0] == "/" ? 1 : 0;
+	let file  = use(`/app/controllers/${index[col+0]}`);
+		file  = new file();
+	let result  = await file[index[col+1]]({req:req,res:res,next:next});
+	return result;
+}
 
 
-const ControllerFiles  = recursiveReadSync(base("/app/controllers"));	
-ControllerFiles.forEach((item)=>{
-	try {
-		if (item.includes(".js") != true) return false; 
-		let itemName  =  item.replace(base("/app/controllers/"),"").replace(".js","");
-		if (itemName != "Controller") {
-			global[itemName] =  require(item);
-			global[itemName] = eval( "new "+itemName+"() " );
-		}
-	}
-	catch(err) {
-		console.log(err)
-	}
-})
+module.exports =  { loadController };

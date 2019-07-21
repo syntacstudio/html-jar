@@ -1,14 +1,14 @@
-"use strict"
+'use strict'
 
-const mysql =  require("mysql");
+const mysql =  require('mysql');
 
 /**
 ** This default connection socket to mysql database
 **/
 
-if (process.env.DB_USE != "true") {
+if (process.env.DB_USE != 'true') {
 	module.exports.query = async(query)=>{
-		return `Cant execute  "${query}" \nPlease enable database in enviroment`;
+		return `Cant execute  '${query}' \nPlease enable database in enviroment`;
 	}
 	return false;	
 }
@@ -23,7 +23,7 @@ const connection = mysql.createConnection({
 
 // try to connect
 
-if(connection.state == "disconnected") {
+if(connection.state == 'disconnected') {
 	connection.connect((e)=>{
 		if (e) throw e;
 		console.log(`[Database : MYSQL] [Status : Connected] [Database Name: ${process.env.DB_NAME}]`)
@@ -35,8 +35,8 @@ const query  = (query)=> {
 	return new Promise((resolve,reject)=>{
 		connection.query(query,(err,res,field)=>{
 			let stat;
-			if (err) stat = "err";
-			return resolve(stat != "err" ? JSON.parse(JSON.stringify(res)) : {"status":"error","message":err});
+			if (err) stat = 'err';
+			return resolve(stat != 'err' ? JSON.parse(JSON.stringify(res)) : {'status':'error','message':err});
 		})
 	})
 
