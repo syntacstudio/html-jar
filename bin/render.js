@@ -12,7 +12,7 @@ import { loadController } from  '../bootstrap/autoloader/controller';
 */
 
 const Render = async (req,res,next,controller)=> {
-	process.env.csrfToken = req.cookies._csrf;
+	process.env.csrfToken = req.csrfToken();
 	try {
 		if (typeof controller == 'string') {
 			return await loadController(controller,{req:req,res:res,next:next})

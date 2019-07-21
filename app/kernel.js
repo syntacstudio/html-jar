@@ -16,9 +16,10 @@ const middlewares  =  {
 
 const globalMiddlewares = {
 	csrf : {
-		enable: true,
+		enable: false,
 		path: 'app.middleware.csrf',
-		method: ['POST', 'PUT', 'DELETE']
+		method: ['POST', 'PUT', 'DELETE'],
+		api:false
 	}
 }
 

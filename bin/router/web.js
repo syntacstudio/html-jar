@@ -6,27 +6,80 @@ import { App ,  Route  } from '../skeleton';
 import { cookieSet } from '../../config/cookie';
 import { loadMiddleware , globalMiddleware } from  '../../bootstrap/autoloader/middleware';
 
-const Render  = use('/bin/render').Render;
+const Render = use('/bin/render').Render;
 
 use('app/kernel');
 global['Routes'] =  {};
-let _route = {};
 
-function Router() {
+//conf
+let groupNames = '';
+let groupControllers = '';
+let groupMiddlewares = [];
+let prefixs = ''
+
+let controllers;
+
+/**
+** Execute router parameter
+**/
+
+const execute = (route,method,name,middleware,controller)=> {
+	controller =  controllers;
+	global['Routes'][name] = route;
+	let loadedMiddleware = [];
+		middleware.map((item)=>{
+			loadedMiddleware.push(loadMiddleware(item))
+		})
+	let gbm = new globalMiddleware(false);
+
+	//,parseForm
+	Route[method](route,loadedMiddleware,csrfProtection,gbm.exec,async(req,res,next)=>{
+		let _res = {};
+		let _next  = function() {
+			return next();
+		}
+		for(var item in res) {
+			let iname  = item;
+			// additional middleware
+			if (item == 'cookie') {
+				_res[item] =  function(param1=false,param2=false,param3=false,param4=false,param5=false) {
+				return res.cookie(param1,param2,cookieSet(param3),param4,param5);
+				}
+			} else {
+				_res[item] =  function(param1=false,param2=false,param3=false,param4=false,param5=false) {
+					return res[iname](param1,param2,param3,param4,param5);
+				}
+			}
+		}
+		async function _send() {
+			return new Promise(async function(resolve,reject) {
+				let newControl = typeof controller == 'function' ? controller : groupControllers + controller;
+				let render =   await Render(req,_res,_next,newControl);
+				Promise.resolve(res.send(render))
+			})
+		}
+		return await _send();
+	})
+
+}
+
+/**
+** This handle base route
+**/
+
+function Router(prefix='', groupName='', groupMiddleware=[], groupController='') {
 	// variabel
 	this.route = '';
 	this.names;
 	this.method;
 	this.middlewares = [];
-	this.prefixs = '';
-	this.groupNames = '';
-	this.controller = '';
-	this.groupMiddlewares = [];
+	this.controller;
 
 	//describing method
 	// get
 	this.get = (route,controller)=>{
 		this.controller =  controller;
+		controllers = controller;
 		this.middlewares = [];
 		this.names = '';
 		this.method =  'get';
@@ -37,6 +90,7 @@ function Router() {
 	// all
 	this.all = (route,controller)=>{
 		this.controller =  controller;
+		controllers = controller;
 		this.middlewares = [];
 		this.names = '';
 		this.method =  'all';
@@ -47,6 +101,7 @@ function Router() {
 	/// post
 	this.post = (route,controller)=>{
 		this.controller =  controller;
+		controllers = controller;
 		this.middlewares = [];
 		this.names = '';
 		this.method =  'post';
@@ -57,6 +112,7 @@ function Router() {
 	// put
 	this.put = (route,controller)=>{
 		this.controller =  controller;
+		controllers = controller;
 		this.middlewares = [];
 		this.names = '';
 		this.method =  'put';
@@ -67,6 +123,7 @@ function Router() {
 	// delete
 	this.delete = (route,controller)=>{
 		this.controller =  controller;
+		controllers = controller;
 		this.middlewares = [];
 		this.names = '';
 		this.method =  'delete';
@@ -93,76 +150,104 @@ function Router() {
 		//this.execute();
 		return this;
 	}
-	// grouping
-	this.group = (router)=>{
-		return router(this);
-	}
-	// prefix
-	this.prefix = (prefix)=>{
-		this.prefixs =  prefix;
-		return this;
-	}
-	// group name
-	this.groupName = (name) =>{
-		this.groupNames =  name;
-		return this;
-	}
-	// group middleware
-	this.groupMiddleware = (middleware)=>{
-		this.groupMiddlewares =  [];
-		if (typeof middleware == 'object') {
-			middleware.forEach((item)=> {
-				this.groupMiddlewares.push(item)
-			});
-		} else {
-			this.groupMiddlewares.push(middleware);
-		}
-		return this;
-	}
+
 	// execution to route
 	this.exec = ()=>{
-		let controller = this.controller
-		let middleware  =  this.middlewares.concat(this.groupMiddlewares)
-		let loadedMiddleware = [];
-			middleware.map((item)=>{
-				loadedMiddleware.push(loadMiddleware(item))
-			})
-		Route[this.method](this.prefixs+this.route,loadedMiddleware,globalMiddleware,async(req,res,next)=>{
-			let _res = {};
-			let _next  = function() {
-				///console.log("demo")
-				return next();
-			}
-			for(var item in res) {
-				let iname  = item;
-				// additional middleware
-				if (item == 'cookie') {
-					_res[item] =  function(param1=false,param2=false,param3=false,param4=false,param5=false) {
-						return res.cookie(param1,param2,cookieSet(param3),param4,param5);
-					}
-				} else {
-					_res[item] =  function(param1=false,param2=false,param3=false,param4=false,param5=false) {
-						return res[iname](param1,param2,param3,param4,param5);
-					}
-				}
-				// end
-			}
-			async function _send() {
-				return new Promise(async function(resolve,reject) {
-					let render =   await Render(req,_res,_next,controller);
-					Promise.resolve(res.send(render))
-				})
-			}
-			return await _send();
-		})
-		//console.log(this);
+
+		try {
+			execute(prefix+this.route,
+					this.method,
+					groupName+this.names,
+					this.middlewares.concat(groupMiddleware),
+					groupController+this.controller);
+		} catch(e) {
+			throw e;
+		}
 	}
+	// reset all param
+	this.route = '';
+	this.names;
+	this.method;
+	this.middlewares = [];
+	this.controller = '';
+
 	return this;
 }
 
+/**
+** This grouping
+**/
+// group prefix
+const prefix = Router.prototype.prefix = (prefix)=>{
+
+	this.group =  group;
+	this.groupName =  groupName;
+	this.groupMiddleware =  groupMiddleware;
+	this.groupController =  groupController;
+
+	prefixs = prefix;
+
+	return this;
+}
+// group name
+const groupName = Router.prototype.groupName = (name)=>{
+
+	this.group =  group;
+	this.prefix =  prefix;
+	this.groupMiddleware =  groupMiddleware;
+	this.groupController =  groupController;
+
+	groupNames = name;
+
+	return this;
+}
+
+const groupMiddleware = Router.prototype.groupMiddleware = (middleware)=> {
+
+	this.group =  group;
+	this.prefix =  prefix;
+	this.groupName =  groupName;
+	this.groupController =  groupController;
+
+	if (typeof middleware == 'object') {
+		middleware.forEach((item)=> {
+			groupMiddlewares.push(item)
+		});
+	} else {
+		groupMiddlewares.push(middleware);
+	}
+
+	return this;
+}
+
+const groupController = Router.prototype.groupController = (controller)=> {
+
+	this.group =  group;
+	this.prefix =  prefix;
+	this.groupMiddleware =  groupMiddleware;
+	this.groupName =  groupName;
+
+	groupControllers = controller;
+
+	return this;
+}
+
+
+const group =  Router.prototype.group = (router)=>{
+
+    const routerBase  =  new Router(prefixs, groupNames, groupMiddlewares, groupControllers);
+
+    groupNames = '';
+	groupControllers = '';
+	groupMiddlewares = [];
+	prefixs = ''
+
+    return router(routerBase);
+}
+
+
+
 const routerMethod  =  new Router();
 
+
 module.exports =  { routerMethod };
-
-
-

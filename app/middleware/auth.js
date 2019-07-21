@@ -8,6 +8,7 @@ class auth {
 
 
 	run({req,res,next}) {
+
 		return next();
 	}
 

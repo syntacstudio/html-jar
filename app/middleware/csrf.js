@@ -10,7 +10,7 @@ class csrf {
 	//{req,res,next}
 	run({req,res,next}) {
 
-	  return csrfProtection(req,res,next);
+	  return parseForm(req,res,next);
 	}
 
 

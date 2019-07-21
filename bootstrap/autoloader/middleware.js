@@ -7,8 +7,11 @@ const middlewares = use('app.kernel');
 ** @param function middlewares
 **/
 
+/**
+** Static middleware
+**/
 
-const loadMiddleware = (name)=>{
+function loadMiddleware(name){
 	let middleware = middlewares.middlewares[name];
 	let call = use(middleware);
 		call = new call();
@@ -18,18 +21,27 @@ const loadMiddleware = (name)=>{
 	return run;
 }
 
-const globalMiddleware = (req,res,next) => {
+/**
+** GLobal middleware
+**/
+
+function globalMiddleware(isApi){
 	let middleware = middlewares.globalMiddlewares;
-	let result =  [];
-	for (var i in middleware) {
-		if (middleware[i].enable == true) {
-			let onLoaded = use(middleware[i].path);
-			let call =  new onLoaded();
-				call =  call.run({req:req,res:res,next:next});
-			result.push({'overide':call,'method':middleware[i].method})
+	this.exec = (req,res,next)=>{
+		let result =  [];
+		for (var i in middleware) {
+			if (middleware[i].enable == true && middleware[i].method.indexOf(req.method) >= 0 && (isApi == middleware[i].api)) {
+				let onLoaded = use(middleware[i].path);
+				let call =  new onLoaded();
+					call =  call.run({req:req,res:res,next:next});
+				result.push({'overide':call,'method':middleware[i].method})
+			} else {
+				return next();
+			}
 		}
+		return JSON.stringify(middleware) == '{}' ? next() : result;
 	}
-	return result;
+	return this;
 }
 
 
